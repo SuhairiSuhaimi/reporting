@@ -1,0 +1,331 @@
+.ahref,
+.button,
+.button2,
+.button3,
+.input,
+div > i {
+  cursor: pointer;
+}
+
+.button.disabled,
+.button.disabled:hover {
+  cursor: not-allowed;
+  background-color: #696969 !important;
+  border-color: #696969 !important;
+}
+
+table th {
+  text-align: center !important;
+}
+
+table th.wd-5 {
+  min-width: 50px;
+}
+
+table th.wd-10 {
+  min-width: 100px;
+}
+
+table th.wd-15 {
+  min-width: 150px;
+}
+
+table th.wd-20 {
+  min-width: 200px;
+}
+
+table th.wd-25 {
+  min-width: 250px;
+}
+
+table th.wd-30 {
+  min-width: 300px;
+}
+
+table th.wd-35 {
+  min-width: 350px;
+}
+
+table th.wd-40 {
+  min-width: 400px;
+}
+
+table th.wd-45 {
+  min-width: 450px;
+}
+
+table th.wd-50 {
+  min-width: 500px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 25px;
+}
+
+.flex-wrapper {
+  display: flex;
+  gap: 20px; /* space between the fields */
+}
+
+.flex-wrapper .form-item {
+  flex: 1; /* make them take equal width */
+}
+
+.grid .form-item {
+  padding: 1px 20px;
+}
+
+.input-inline-block > * {
+  position: relative;
+  display: inline-block;
+}
+
+.input-icon *:first-child {
+  padding-right: 5px; /* leave space for icon on the right */
+}
+
+.form-lbl.inline-block,
+.form-wrapper.inline-block,
+.form-item.inline-block,
+.form-control.inline-block {
+  display: inline-block !important;
+}
+
+i.inline-block {
+  margin-left: -2rem;
+}
+
+.radio-inline .form-type-radio {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+input[type="radio"] {
+  position: relative;
+  transform: translateY(25%);
+  height: 1.1875rem;
+  width: 1.1875rem;
+}
+
+input[type="radio"]:disabled + label {
+  color: var(--color-black);
+  cursor: not-allowed;
+}
+
+input[type="radio"]:disabled:checked::before {
+  content: "✅";
+  font-size: 1.25rem;
+  margin-left: -5px;
+  vertical-align: bottom;
+}
+
+input[type="radio"]:disabled:not(:checked) + label {
+  display: none;
+}
+
+.form-type-radio:has(input[type="radio"]:disabled:not(:checked)) {
+  display: none;
+}
+
+form .form-text,
+form .form-email,
+form .form-select,
+textarea {
+  color: var(--color-black);
+}
+
+form .form-select {
+  background-color: var(--light) !important;
+  border: 1px solid var(--border) !important;
+  padding: 9px 6px !important;
+}
+
+.form-item .form-item {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.fieldset-activity {
+  border: 1px dotted var(--border);
+  padding: 10px 20px;
+  margin: 5px 0px;
+}
+
+.fieldset_content {
+  padding: 10px 0px;
+}
+
+.setfield-duta-party:nth-child(odd) {
+  padding-right: 10px;
+}
+
+.setfield-duta-party:nth-child(even) {
+  padding-left: 10px;  
+}
+
+.setfield-activity-image:nth-child(odd) {
+  padding-right: 10px;
+}
+
+.setfield-activity-image:nth-child(even) {
+  padding-left: 10px;
+}
+
+
+input[disabled],
+select[disabled],
+select option[disabled],
+textarea[disabled] {
+  background-color: var(--color-linear3) !important;
+  color: var(--color-black) !important;
+}
+
+body.path-pf10 .flatpickr-calendar .flatpickr-day.today.selected,
+body.path-pf10 .flatpickr-calendar .flatpickr-day.selected,
+body.path-pf10 .flatpickr-calendar .flatpickr-day.startRange,
+body.path-pf10 .flatpickr-calendar .flatpickr-day.endRange {
+  background-color: var(--color-primary) !important;
+  color: var(--color-white);
+}
+
+body.path-pf10 .flatpickr-calendar .flatpickr-day.today {
+  background-color: var(--color-primary-light) !important;
+  color: var(--text-color);
+}
+
+p.inputerror {
+  display: none;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--color-linear2);
+  padding-top: 0px;
+}
+
+.modal select {
+  min-width: 200px;
+}
+
+@media (max-width: 730px) {
+  .modal-content {
+    max-width: 100%;
+  }
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 1% auto;
+  padding: 10px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 600px;
+}
+
+.modal-header {
+  font-size: 20px;
+  font-weight: bold;
+  padding: 0.5rem 1rem !important;
+}
+
+.close {
+  color: var(--color-black);
+  cursor: pointer;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.custom-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.custom-modal-content {
+  background-color: #fff;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+}
+
+.custom-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+div.image-preview {
+  max-height: auto;
+  /*max-width: 160px;*/
+}
+
+div.image-preview img {
+  max-height: 250px;
+}
+
+.pf10-locality .block-locality {
+  padding: 1rem;
+}
+
+.pf10-locality .div-locality,
+.pf10-locality .div-locality > * {
+  cursor: pointer;
+}
+
+.pf10-locality .div-locality {
+  border-width: 1px;
+  border-style: outset;
+  border-radius: 0.5rem;
+  color: var(--color-black);
+  display: flex;
+  font-weight: 600;
+  justify-content: center;
+  align-items: center;
+  min-height: 125px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.pf10-locality .div-locality.bg-blue {
+  background-color: #e7ecff;
+  border-color: #1c3fb7;
+}
+
+.pf10-locality .div-locality.bg-green {
+  background-color: #daf8e6;
+  border-color: #1a8245;
+}
+
+.pf10-locality .div-locality.bg-red {
+  background-color: #ffdead;
+  border-color: #e1580e;
+}

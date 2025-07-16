@@ -1,0 +1,10 @@
+services:
+  pf10.role_access_check:
+    class: Drupal\pf10\Access\RoleAccessCheck
+    tags:
+      - { name: access_check, applies_to: _custom_access }
+    arguments: []
+
+  pf10.master_data_service:
+    class: Drupal\pf10\Service\MasterDataService
+    arguments: ['@database']

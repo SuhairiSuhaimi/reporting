@@ -1,0 +1,9 @@
+name: PF10 Submission & Data Massage
+type: module
+description: 'Create custom table for PF10. Manage all about PF10, from listing page, submission, update and data manage. Only admin with privileges to submit and manage PF10 data.'
+core_version_requirement: ^10 || ^11
+package: Custom
+version: 1.0
+dependencies:
+  - drupal:system
+  - file

@@ -1,0 +1,573 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function pf10_theme($existing, $type, $theme, $path) {
+  return [
+
+    'main-page' => [
+      'variables' => [
+        'items' => [],
+      ],
+      'template' => 'main-page',
+    ],
+
+    'manage-page' => [
+      'variables' => [
+        'items' => [],
+      ],
+      'template' => 'manage-page',
+    ],
+
+    'listing' => [
+      'variables' => [
+        'items' => [],
+        'tbheader' => [],
+        'states' => [],
+        'pager' => '',
+      ],
+      'template' => 'pf10-listing',
+    ],
+
+  ];
+
+}
+
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Database\Database;
+use Drupal\node\NodeInterface;
+use Drupal\pf10\TempStorage\NodeTempStorage;
+
+
+/**
+ * Implements hook_form_FORM_ID_alter() for node_form.
+ */
+function pf10_form_node_article_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Ensure it's the Article content type.
+  if ($form_id !== 'node_article_form' && $form_id !== 'node_article_edit_form') {
+    return;
+  }
+
+  // Check if "publisher" field is exist.
+  if (isset($form['field_publisher'])) {
+    // Add a custom class to the widget wrapper.
+    //$form['field_publisher']['#attributes']['class'][] = 'publisher_text';
+    $form['field_publisher']['#attributes']['style'] = 'display: none;';
+
+    // Get the weight for field_channel_tv to control its position in the form.
+    $publisher_weight = $form['field_publisher']['#weight'];
+
+    $options = getPublisherOptions();
+
+    // Add the select field.
+    $form['publisher_select'] = [
+      '#type' => 'select2',
+      '#title' => t('Platform Penerbitan'),
+      '#default_value' => $form['field_publisher']['widget'][0]['value']['#default_value'] ?? '',  // get default value textfield
+      '#required' => TRUE,
+      '#options' => $options,
+      '#empty_option' => '- Sila Pilih -',
+      '#weight' => $publisher_weight,
+      '#attributes' => [
+        'id' => 'publisher_select',
+        'autocomplete' => 'off',
+      ],
+    ];
+
+    // Add the "Other" textfield that appears conditionally.
+    $form['publisher_other_wrapper'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'id' => 'publisher-other-wrapper'
+      ],
+      '#weight' => $publisher_weight,
+    ];
+
+    $form['publisher_other_wrapper']['publisher_other'] = [
+      '#type' => 'textfield',
+      '#title' => t('Lain-lain Platform'),
+      '#states' => [
+        'visible' => [
+          ':input[name="publisher_select"]' => ['value' => 'other'],
+        ],
+        'required' => [
+          ':input[name="publisher_select"]' => ['value' => 'other'],
+        ],
+      ],
+      '#attributes' => [
+        'id' => 'publisher_other',
+        'autocomplete' => 'off',
+      ],
+    ];
+  }
+
+  $form['#attached']['library'][] = 'pf10/article';
+  $form['#attached']['library'][] = 'pf10/select2css';
+  $form['actions']['submit']['#submit'][] = 'pf10_article_submit_handler';
+}
+
+
+/**
+ * Implements hook_form_FORM_ID_alter() for node_form.
+ */
+function pf10_form_node_interview_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Ensure it's the Interview content type.
+  if ($form_id !== 'node_interview_form' && $form_id !== 'node_interview_edit_form') {
+    return;
+  }
+
+  // Check if "channel" field is exist.
+  if (isset($form['field_channel'])) {
+    // Add a custom class to the widget wrapper.
+    //$form['field_channel']['#attributes']['class'][] = 'channel_text';
+    //$form['field_channel']['#attributes']['style'] = 'display: none;';
+
+    // Get the weight for field_channel_tv to control its position in the form.
+    $channel_weight = $form['field_channel']['#weight'];
+
+    if ($form['field_channel_type']['widget']['#type'] === 'radios') {
+      $channel_type = $form['field_channel_type']['widget']['#default_value'];  // get default value radios
+    }
+    elseif ($form['field_channel_type']['widget']['#type'] === 'select') {
+      $channel_type = $form['field_channel_type']['widget']['#default_value'][0];  // get default value select
+    }
+    else {
+        $channel_type = NULL;
+    }
+
+    $options = getChannelOptions($channel_type);
+
+    // Add the select field.
+    $form['channel_select'] = [
+      '#type' => 'select2',
+      '#title' => t('Broadcast Channel'),
+      '#default_value' => $form['field_channel']['widget'][0]['value']['#default_value'] ?? '',  // get default value textfield
+      '#required' => TRUE,
+      '#options' => $options,
+      '#empty_option' => '- Sila Pilih -',
+      '#weight' => $channel_weight,
+      '#attributes' => [
+        'id' => 'channel_select',
+        'autocomplete' => 'off',
+      ],
+    ];
+
+    // Add the "Other" textfield that appears conditionally.
+    $form['channel_other_wrapper'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'id' => 'channel-other-wrapper'
+      ],
+      '#weight' => $channel_weight,
+    ];
+
+    $form['channel_other_wrapper']['channel_other'] = [
+      '#type' => 'textfield',
+      '#title' => t('Lain-lain Platform'),
+      '#states' => [
+        'visible' => [
+          ':input[name="channel_select"]' => ['value' => 'other'],
+        ],
+        'required' => [
+          ':input[name="channel_select"]' => ['value' => 'other'],
+        ],
+      ],
+      '#attributes' => [
+        'id' => 'channel_other',
+        'autocomplete' => 'off',
+      ],
+    ];
+  }
+
+  $form['#attached']['library'][] = 'pf10/interview';
+  $form['#attached']['library'][] = 'pf10/select2css';
+  $form['actions']['submit']['#submit'][] = 'pf10_interview_submit_handler';
+}
+
+
+/**
+ * Implements hook_form_FORM_ID_alter() for node_form.
+ */
+function pf10_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Check if the form is for the 'intearticlerview' content type.
+  if ($form_id === 'node_article_edit_form') {
+    // Check if "publisher" field is exist.
+    if (isset($form['field_publisher'])) {
+      // Add a custom class to the widget wrapper.
+      $form['field_publisher']['#attributes']['class'][] = 'publisher_text';
+      $form['field_publisher']['#attributes']['style'] = 'display: none;';
+
+      // Get the weight for field_channel_tv to control its position in the form.
+      $publisher_weight = $form['field_publisher']['#weight'];
+
+      $options = getPublisherOptions();
+
+      // Add the select field.
+      $form['publisher_select'] = [
+        '#type' => 'select2',
+        '#title' => t('Publisher Platform'),
+        '#default_value' => $form['field_publisher']['widget'][0]['value']['#default_value'] ?? '',  // get default value textfield
+        '#required' => TRUE,
+        '#options' => $options,
+        '#empty_option' => '- Sila Pilih -',
+        '#weight' => $publisher_weight,
+        '#attributes' => [
+          'id' => 'publisher_select',
+          'autocomplete' => 'off',
+        ],
+      ];
+
+      // Add the "Other" textfield that appears conditionally.
+      $form['publisher_other_wrapper'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'id' => 'publisher-other-wrapper'
+        ],
+        '#weight' => $publisher_weight,
+      ];
+
+      $form['publisher_other_wrapper']['publisher_other'] = [
+        '#type' => 'textfield',
+        '#title' => t('Others Platform'),
+        '#states' => [
+          'visible' => [
+            ':input[name="publisher_select"]' => ['value' => 'other'],
+          ],
+          'required' => [
+            ':input[name="publisher_select"]' => ['value' => 'other'],
+          ],
+        ],
+        '#attributes' => [
+          'id' => 'publisher_other',
+          'autocomplete' => 'off',
+        ],
+      ];
+    }
+
+    $form['#attached']['library'][] = 'pf10/article';
+    $form['#attached']['library'][] = 'pf10/select2css';
+    $form['actions']['submit']['#submit'][] = 'pf10_article_submit_handler';
+  }
+  elseif ($form_id === 'node_interview_edit_form') {
+    // Check if "channel" field is exist.
+    if (isset($form['field_channel'])) {
+      // Add a custom class to the widget wrapper.
+      //$form['field_channel']['#attributes']['class'][] = 'channel_text';
+      //$form['field_channel']['#attributes']['style'] = 'display: none;';
+
+      // Get the weight for field_channel_tv to control its position in the form.
+      $channel_weight = $form['field_channel']['#weight'];
+
+      if ($form['field_channel_type']['widget']['#type'] === 'radios') {
+        $channel_type = $form['field_channel_type']['widget']['#default_value'];  // get default value radios
+      }
+      elseif ($form['field_channel_type']['widget']['#type'] === 'select') {
+        $channel_type = $form['field_channel_type']['widget']['#default_value'][0];  // get default value select
+      }
+      else {
+        $channel_type = NULL;
+      }
+
+      $options = getChannelOptions($channel_type);
+
+      // Add the select field.
+      $form['channel_select'] = [
+        '#type' => 'select2',
+        '#title' => t('Broadcast Channel'),
+        '#default_value' => $form['field_channel']['widget'][0]['value']['#default_value'] ?? '',  // get default value textfield
+        '#required' => TRUE,
+        '#options' => $options,
+        '#empty_option' => '- Sila Pilih -',
+        '#weight' => $channel_weight,
+        '#attributes' => [
+          'id' => 'channel_select',
+          'autocomplete' => 'off',
+        ],
+      ];
+
+      // Add the "Other" textfield that appears conditionally.
+      $form['channel_other_wrapper'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'id' => 'channel-other-wrapper'
+        ],
+        '#weight' => $channel_weight,
+      ];
+
+      $form['channel_other_wrapper']['channel_other'] = [
+        '#type' => 'textfield',
+        '#title' => t('Others Channel'),
+        '#states' => [
+          'visible' => [
+            ':input[name="channel_select"]' => ['value' => 'other'],
+          ],
+          'required' => [
+            ':input[name="channel_select"]' => ['value' => 'other'],
+          ],
+        ],
+        '#attributes' => [
+          'id' => 'channel_other',
+          'autocomplete' => 'off',
+        ],
+      ];
+
+    }
+
+    $form['#attached']['library'][] = 'pf10/interview';
+    $form['#attached']['library'][] = 'pf10/select2css';
+    //$form['actions']['submit']['#submit'][] = 'pf10_interview_submit_handler';
+  }
+}
+
+
+/**
+ * Implements hook_entity_presave().
+ */
+function pf10_entity_presave(EntityInterface $entity) {
+  // Check if the field publisher exists in article to avoid errors.
+  if ($entity->bundle() === 'article' && $entity->hasField('field_publisher')) {
+    if ($entity instanceof \Drupal\node\NodeInterface) {
+      $publisher_value = $entity->get('field_publisher')->value;
+
+      if (!is_numeric($publisher_value)) {
+        $publisher_id = checkinsert_publisher_other($publisher_value);
+
+        if ($publisher_id) {
+          $entity->set('field_publisher', $publisher_id);
+        }
+      }
+    }
+  }
+  // Check if the field channel exists in interview to avoid errors.
+  elseif ($entity->bundle() === 'interview' && $entity->hasField('field_channel')) {
+    if ($entity instanceof \Drupal\node\NodeInterface) {
+      $channel_type = $entity->get('field_channel_type')->value;
+      $channel_value = $entity->get('field_channel')->value;
+
+      if (!is_numeric($channel_value)) {
+        $channel_id = checkinsert_channel_other($channel_value, $channel_type);
+
+        if ($channel_id) {
+          $entity->set('field_channel', $channel_id);
+        }
+      }
+    }
+  }
+}
+
+
+/**
+ * Implements hook_node_presave().
+ */
+function pf10_node_presave(NodeInterface $node) {
+}
+
+
+/**
+ * Custom submit handler to insert new publisher if "Other" is selected.
+ */
+function pf10_article_submit_handler(array &$form, FormStateInterface $form_state) {
+  $connection = Database::getConnection();
+  $publisher = $form_state->getValue(['field_publisher', 0, 'value']);
+  $selected = $form_state->getValue('publisher_select');
+  $other_value = trim($form_state->getValue('publisher_other'));
+
+  $trim_value = ucwords($other_value);
+  $new_id = NULL;
+
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+
+  if ($selected === 'other' && !empty($other_value)) {
+    // check if the other_value already exist in table
+    $exists = $connection->select('custom_publisher', 'p')
+      ->fields('p', ['id'])
+      ->condition('publisher_name', $other_value)
+      ->execute()
+      ->fetchField();
+
+    if (!$exists) {
+      $connection->insert('custom_publisher')
+        ->fields([
+          'publisher_name' => $trim_value,
+          'created_at' => date('Y-m-d H:i:s'),  //\Drupal::time()->getCurrentTime(),
+          'deleted_at' => NULL,
+        ])
+        ->execute();
+
+      $new_id = $connection->lastInsertId();
+    }
+    else {
+      $new_id = $exists;
+    }
+
+    // Set in form_state.
+    $form_state->setValue(['field_publisher', 0, 'value'], $new_id);
+    //$form_state->setValue('field_publisher', $new_id);
+
+    $node->set('field_publisher', $new_id);
+  }
+}
+
+
+function getPublisherOptions() {
+  $options = [];
+
+  $master = \Drupal::service('pf10.master_data_service');
+
+  $results = $master->getPublisher();
+
+  foreach ($results as $rec) {
+    $options[ $rec->id ] = ucwords($rec->publisher_name);
+  }
+
+  $options['other'] = t('Lain-lain');
+
+  return $options;
+}
+
+
+/**
+ * Custom form check to ensure that 'field_publisher_other' value not exist in custom_publisher.
+ */
+function checkinsert_publisher_other($other_value) {
+  $connection = Database::getConnection();
+
+  $trim_value = ucwords(trim($other_value));
+
+  // check if the other_value already exist in table
+  $exists = $connection->select('custom_publisher', 'p')
+    ->fields('p', ['id'])
+    ->condition('publisher_name', $trim_value)
+    ->execute()
+    ->fetchField();
+
+  if (!$exists) {
+    $connection->insert('custom_publisher')
+      ->fields([
+        'publisher_name' => $trim_value,
+        'created_at' => date('Y-m-d H:i:s'),  //\Drupal::time()->getCurrentTime(),
+        'deleted_at' => NULL,
+      ])
+      ->execute();
+
+    $new_id = $connection->lastInsertId();
+  }
+  else {
+    $new_id = $exists;
+  }
+
+  return $new_id;
+}
+
+
+/**
+ * Custom submit handler to insert new channel if "Other" is selected.
+ */
+function pf10_interview_submit_handler(array &$form, FormStateInterface $form_state) {
+  $connection = Database::getConnection();
+
+  $channel = $form_state->getValue(['field_channel', 0, 'value']);
+  $selected = $form_state->getValue('channel_select');
+  $other_value = trim($form_state->getValue('channel_other'));
+
+  // Get the full node entity from form state (after submission).
+  $node = $form_state->getFormObject()->getEntity();
+
+  $channel_type = $node->get('field_channel_type')->value;
+  //$channel_type = $form_state->getValue(['field_channel_type', 0, 'value']);
+
+  $trim_value = ucwords($other_value);
+  $new_id = NULL;
+
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $form_state->getFormObject()->getEntity();
+
+  if ($selected === 'other' && !empty($other_value)) {
+    // check if the other_value already exist in table
+    $exists = $connection->select('custom_channel', 'c')
+      ->fields('c', ['id'])
+      ->condition('channel_type', $channel_type)
+      ->condition('channel_name', $other_value)
+      ->execute()
+      ->fetchField();
+
+    if (!$exists) {
+      $connection->insert('custom_channel')
+        ->fields([
+          'channel_name' => $trim_value,
+          'channel_type' => $channel_type,
+          'created_at' => date('Y-m-d H:i:s'),  //\Drupal::time()->getCurrentTime(),
+          'deleted_at' => NULL,
+        ])
+        ->execute();
+
+      $new_id = $connection->lastInsertId();
+    }
+    else {
+      $new_id = $exists;
+    }
+
+    // Set in form_state.
+    $form_state->setValue(['field_channel', 0, 'value'], $new_id);
+    //$form_state->setValue('field_channel', $new_id);
+
+    $node->set('field_channel', $new_id);
+  }
+}
+
+
+function getChannelOptions($channel_type) {
+  $options = [];
+
+  $master = \Drupal::service('pf10.master_data_service');
+
+  $results = $master->getChannel($channel_type);
+
+  foreach ($results as $rec) {
+    $options[ $rec->id ] = ucwords($rec->channel_name);
+  }
+
+  $options['other'] = t('Lain-lain');
+
+  return $options;
+}
+
+
+/**
+ * Custom form check to ensure that 'field_channel_other' value not exist in custom_channel.
+ */
+function checkinsert_channel_other($other_value, $channel_type) {
+  $connection = Database::getConnection();
+
+  $trim_value = ucwords(trim($other_value));
+
+  // check if the other_value already exist in table
+  $exists = $connection->select('custom_channel', 'c')
+    ->fields('c', ['id'])
+    ->condition('channel_type', $channel_type)
+    ->condition('channel_name', $trim_value)
+    ->execute()
+    ->fetchField();
+
+  if (!$exists) {
+    $connection->insert('custom_channel')
+      ->fields([
+        'channel_type' => $channel_type,
+        'channel_name' => $trim_value,
+        'created_at' => date('Y-m-d H:i:s'),  //\Drupal::time()->getCurrentTime(),
+        'deleted_at' => NULL,
+      ])
+      ->execute();
+
+    $new_id = $connection->lastInsertId();
+  }
+  else {
+    $new_id = $exists;
+  }
+
+  return $new_id;
+}

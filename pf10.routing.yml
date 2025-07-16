@@ -1,0 +1,228 @@
+pf10.main-page:
+  path: '/pf10/mainpage'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::mainPage'
+  requirements:
+    _permission: 'access content'
+
+pf10.sign-in:
+  path: '/pf10/signin'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::signIn'
+  requirements:
+    _permission: 'access content'
+
+pf10.manage-page:
+  path: '/pf10/managepage'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::managePage'
+  requirements:
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.listing:
+  path: '/pf10/listing'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::listing'
+  requirements:
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.listing-ajax:
+  path: '/pf10/listing-ajax'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxListing'
+    _title: 'Get PF10 List Using Ajax'
+  requirements:
+    #_permission: 'edit content'
+    _custom_access: 'pf10.role_access_check::access'
+
+dpf10.report-detail:
+  path: '/pf10/basic-info/{id}'
+  defaults:
+    _form: '\Drupal\pf10\Form\ReportDetail'
+    _title: 'PF10 Basic Information'
+    id: ''  # Default makes it optional
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+dpf10.report-detail-submit:
+  path: '/pf10/detail/submit'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::insertDetail'
+    _title: 'Submit PF10'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+dpf10.report-detail-update:
+  path: '/pf10/detail/update'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::updateDetail'
+    _title: 'Update PF10'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+dpf10.report-activity:
+  path: '/pf10/activity-info/{id}'
+  defaults:
+    _form: '\Drupal\pf10\Form\ReportActivity'
+    _title: 'PF10 Activiti Information'
+    id: ''  # Default makes it optional
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+dpf10.report-activity-submit:
+  path: '/pf10/activity/submit'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::submitActivity'
+    _title: 'Submit PF10 Activity'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+dpf10.report-additional:
+  path: '/pf10/add-info/{id}'
+  defaults:
+    _form: '\Drupal\pf10\Form\ReportAdditionalInfo'
+    _title: 'PF10 Additional Information'
+    id: ''  # Default makes it optional
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+dpf10.report-additional-submit:
+  path: '/pf10/additional/submit'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::submitAdditional'
+    _title: 'Submit PF10 Additional Information'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-facility:
+  path: '/pf10/ajax-facility'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxDataFacility'
+    _title: 'Get Facility Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-facility-by-ptj:
+  path: '/pf10/ajax-facility-by-ptj'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxDataFacilityByPTJ'
+    _title: 'Get Facility By PTJ Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-ptj:
+  path: '/pf10/ajax-ptj'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxDataPTJ'
+    _title: 'Get PTJ Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-ptj-by-facility:
+  path: '/pf10/ajax-ptj-by-facility'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxDataPTJbyFacility'
+    _title: 'Get PTJ By Facility Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-new-activity:
+  path: '/pf10/ajax-add-activity'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxNewActivity'
+    _title: 'Add Activity Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-activity-content:
+  path: '/pf10/ajax-activity-content'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxActivityContent'
+    _title: 'Load Activity Content Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-new-speech-title:
+  path: '/pf10/ajax-add-speech-title'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxNewSpeechTitle'
+    _title: 'Add Speech Title Content Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-channel:
+  path: '/pf10/ajax-channel'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxDataChannel'
+    _title: 'Get Channel Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-channel-id:
+  path: '/pf10/ajax-channel2'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxDataChannel2'
+    _title: 'Get Channel Using Ajax'
+  requirements:
+    _permission: 'access content'
+    #_custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-new-social-media:
+  path: '/pf10/ajax-add-social-media'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxNewSocialMedia'
+    _title: 'Add Social Media Content Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-new-other-activity:
+  path: '/pf10/ajax-add-other-activity'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxNewOtherActivity'
+    _title: 'Add Other Activity Content Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-new-duta-participant:
+  path: '/pf10/ajax-add-duta-party'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxNewDutaParticipant'
+    _title: 'Add Duta Participant Content Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-pawe:
+  path: '/pf10/ajax-pawe'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxDataPawe'
+    _title: 'Get Pawe Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'
+
+pf10.ajax-new-activity-image:
+  path: '/pf10/ajax-add-activity-image'
+  defaults:
+    _controller: '\Drupal\pf10\Controller\pf10Controller::ajaxNewActivityImage'
+    _title: 'Add Activiti Image Content Using Ajax'
+  requirements:
+    #_permission: 'access content'
+    _custom_access: 'pf10.role_access_check::access'

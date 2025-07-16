@@ -1,0 +1,75 @@
+<h2 class="text-bold text-start">Pelaporan Program</h2>
+
+<h3 class="text-bold d-none">Pelaporan PF10</h3>
+
+<!-- Success Message -->
+<div id="successMessage" class="message message-status"></div>
+
+<!-- Error Message -->
+<div id="errorMessage" class="message message-error"></div>
+
+<div class="pf10-locality grid grid5-same">
+    {% if items is not empty %}
+        {% for item in items %}
+            {% set n = loop.index0 %}
+            {# Set odd/even class #}
+            {% set divclass = n is even ? 'even' : 'odd' %}
+
+            {# Set background color based on specific values of n #}
+            {% if n in [0, 2, 4, 5, 7, 9, 10, 12, 14, 15, 17] %}
+                {% set bgcolor = 'bg-blue' %}
+            {% elseif n in [1, 3, 6, 8, 11, 13, 16, 18] %}
+                {% set bgcolor = 'bg-green' %}
+            {% else %}
+                {% set bgcolor = NULL %}
+            {% endif %}
+
+            {% if item.key == 'NOT' %}
+                {% set bgcolor = 'bg-red' %}
+            {% endif %}
+
+            <div class="block-locality {{ divclass }}">
+                <div class="div-locality {{ bgcolor }}" rel="{{ item.key }}">
+                    {{ item.value }}
+                </div>
+            </div>
+
+        {% endfor %}
+    {% endif %}
+</div>
+
+<!-- Modal for Sign In -->
+<div id="signinModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header bg-gray-400 d-none">
+      Log Masuk
+      <span class="close" id="closesignin">&times;</span>
+    </div>
+
+    <form id="signinForm">
+      <fieldset class="form-wrapper d-block text-center align-items-center p-2">
+        <legend>
+          <span class="fieldset-legend"></span>
+        </legend>
+        <div class="fieldset-wrapper text-end px-5">
+          <input type="hidden" name="locality" id="locality" value="">
+          <div class="form-item form-type-text d-block input-inline-block">
+            <div for="signin-email" class="form-lbl form-required">Email:</div>
+            <input type="email" name="signin_email" class="field-email form-email w-70" id="signin_email" value="" autocomplete="off" placeholder="yourname@example.com" maxlength="150">
+          </div>
+          <div class="form-item form-type-password d-block input-inline-block">
+            <div for="password" class="form-lbl form-required">Password:</div>
+            <input type="password" name="password" class="field-password form-password w-70" id="signin_password" value="" autocomplete="off" placeholder="kata laluan">
+          </div>
+        </div>
+
+        <p class="text-danger inputerror"></p>
+      </fieldset>
+
+      <div class="form-button form-type-button d-block text-center input-inline-block mt-3">
+        <div class="button disabled" id="submitSignIn">Log Masuk</div>
+        <div class="button3" id="closeSignIn">Tutup</div>
+      </div>
+    </form>
+  </div>
+</div>

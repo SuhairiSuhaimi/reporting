@@ -1,0 +1,46 @@
+<h2 class="text-bold text-center">Pelaporan PF10</h2>
+
+<div class="pf10-list-filter d-none">
+    <div class="bg-gray-200 border-1 rounded-3 w-xl-50 mx-auto p-3">
+        <div class="font1 text-bolder text-lg text-capitalize">Carian rekod PF10</div>
+        <div class="border-1 rounded-3 bg-white w-65 d-sm-inline-block p-1">
+            <input type="text" name="name" id="name" class="w-90 border-0" placeholder="Carian" value="">
+            <i class="fas fa-search ps-2 d-none d-sm-inline"></i>
+        </div>
+        <button class="button border-0 no-hover mx-2" id="btn_search">Cari</button>
+        <button class="button3 no-hover rounded-circle py-2" id="btn_reset">
+            <i class="fas fa-redo"></i>
+        </button>
+    </div>
+
+    <input type="hidden" id="currentPage" value="1"/>
+</div>
+
+<h3 class="text-bold d-none">Pelaporan PF10</h3>
+
+<!-- Success Message -->
+<div id="successMessage" class="message message-status"></div>
+
+<!-- Error Message -->
+<div id="errorMessage" class="message message-error"></div>
+
+<div class="pf10s overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+      {% if tbheader is not empty %}
+        {% for hd in tbheader %}
+          <th class="{{ hd.class }}">{{ hd.value }}</th>
+        {% endfor %}
+      {% endif %}
+      </tr>
+    </thead>
+
+    <tbody id="pf10_content">
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="pagination" id="pagination">
+</div>

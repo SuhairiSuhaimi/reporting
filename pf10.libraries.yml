@@ -1,0 +1,129 @@
+style:
+  version: 1.x
+  css:
+    component:
+      css/style.css: {}
+
+pf10:
+  version: 1.x
+  css:
+    component:
+      css/style.css: {}
+  js:
+    js/pf10.js: {}
+  dependencies:
+    - core/jquery
+
+numberjs:
+  version: 1.x
+  js:
+    js/number.js: {}
+  dependencies:
+    - core/jquery
+
+decimaljs:
+  version: 1.x
+  js:
+    js/decimal.js: {}
+  dependencies:
+    - core/jquery
+
+flatpickr:
+  version: 1.x
+  css:
+    component:
+      css/flatpickr.min.css: {}
+  js:
+    js/flatpickr.min.js: {}
+    js/rangePlugin.js: {}
+    js/flatpickr-local.js: {}
+  dependencies:
+    - core/jquery
+
+googlemapjs:
+  version: 1.x
+  js:
+    js/googlemap.js: {}
+  dependencies:
+    - core/jquery
+
+reportdetail:
+  version: 1.x
+  js:
+    js/reportdetail.js: {}
+  dependencies:
+    - core/jquery
+
+reportactivity:
+  version: 1.x
+  js:
+    js/reportactivity.js: {}
+  dependencies:
+    - core/jquery
+
+reportadditional:
+  version: 1.x
+  js:
+    js/reportadditional.js: {}
+  dependencies:
+    - core/jquery
+
+select2:
+  version: 4.0.13
+  css:
+    component:
+      /libraries/select2/dist/css/select2.min.css: {}
+  js:
+    /libraries/select2/dist/js/select2.min.js: { minified: true }
+  dependencies:
+    - core/jquery
+
+select2css:
+  version: 1.x
+  css:
+    component:
+      css/select2.css: {}
+
+mainpage:
+  version: 1.x
+  js:
+    js/mainpage.js: {}
+  dependencies:
+    - core/jquery
+
+managepage:
+  version: 1.x
+  js:
+    js/managepage.js: {}
+  dependencies:
+    - core/jquery
+
+listing:
+  version: 1.x
+  js:
+    js/listing.js: {}
+  dependencies:
+    - core/jquery
+
+article:
+  version: 1.x
+  js:
+    js/article.js: {}
+  dependencies:
+    - core/jquery
+
+interview:
+  version: 1.x
+  js:
+    js/interview.js: {}
+  dependencies:
+    - core/jquery
+
+
+
+
+testing:
+  version: 1.x
+  css:
+    component:
+      css/testing.css: {}

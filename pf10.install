@@ -1,0 +1,1191 @@
+<?php
+
+use Drupal\Core\Database\Database;
+
+/**
+ * Implements hook_schema().
+ */
+function pf10_schema() {
+  $schema['custom_testing'] = [
+    'description' => 'Stores module data as key/value pairs per user.',
+  ];
+
+  //return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function pf10_install() {
+  $connection = \Drupal::database();
+  $schema = $connection->schema();
+
+  $tbl_reference = 'custom_pf10_reference';
+  if (!$schema->tableExists($tbl_reference)) {
+    $schema_reference = [
+      'fields' => [
+        'year' => [
+          'type' => 'int',
+          'size' => 'big',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'entry' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['year'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_reference, $schema_reference);
+  }
+
+  $tbl_state = 'custom_state_district';
+  if (!$schema->tableExists($tbl_state)) {
+    $schema_state = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'state_id' => [
+          'type' => 'int',
+          'size' => 'big',
+        ],
+        'state' => [
+          'type' => 'varchar',
+          'length' => 150,
+        ],
+        'state_code' => [
+          'type' => 'varchar',
+          'length' => 5,
+        ],
+        'district_id' => [
+          'type' => 'int',
+          'size' => 'big',
+        ],
+        'district' => [
+          'type' => 'varchar',
+          'length' => 25,
+        ],
+        'district_unique' => [
+          'type' => 'int',
+          'size' => 'big',
+          'unsigned' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_state, $schema_state);
+  }
+
+  $tbl_facility = 'custom_facility_ptj';
+  if (!$schema->tableExists($tbl_facility)) {
+    $schema_facility = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'facility_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+          //'not null' => TRUE,
+        ],
+        'facility' => [
+          'type' => 'varchar',
+          'length' => 150,
+          'not null' => TRUE,
+        ],
+        'ptj_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+          //'not null' => TRUE,
+        ],
+        'ptj_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+          'not null' => TRUE,
+        ],
+        'ptj' => [
+          'type' => 'varchar',
+          'length' => 150,
+          'not null' => TRUE,
+        ],
+        'state_code' => [
+          'type' => 'varchar',
+          'length' => 5,
+          'not null' => TRUE,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_facility, $schema_facility);
+  }
+
+  $tbl_publisher = 'custom_publisher';
+  if (!$schema->tableExists($tbl_publisher)) {
+    $schema_publisher = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'publisher_name' => [
+          'type' => 'varchar',
+          'length' => 150,
+          'not null' => TRUE,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_publisher, $schema_publisher);
+  }
+
+  $tbl_channel = 'custom_channel';
+  if (!$schema->tableExists($tbl_channel)) {
+    $schema_channel = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'channel_type' => [
+          'type' => 'varchar',
+          'length' => 5,
+          'not null' => TRUE,
+        ],
+        'channel_name' => [
+          'type' => 'varchar',
+          'length' => 100,
+          'not null' => TRUE,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_channel, $schema_channel);
+  }
+
+  $tbl_social_platform = 'custom_social_platform';
+  if (!$schema->tableExists($tbl_social_platform)) {
+    $schema_social_platform = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'platform_name' => [
+          'type' => 'varchar',
+          'length' => 20,
+          'not null' => TRUE,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_social_platform, $schema_social_platform);
+  }
+
+  $tbl_collaboration = 'custom_collaboration';
+  if (!$schema->tableExists($tbl_collaboration)) {
+    $schema_collaboration = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'collab_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+          'not null' => TRUE,
+        ],
+        'collab_name' => [
+          'type' => 'varchar',
+          'length' => 150,
+          'not null' => TRUE,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_collaboration, $schema_collaboration);
+  }
+
+  $tbl_pawe = 'custom_pawe';
+  if (!$schema->tableExists($tbl_pawe)) {
+    $schema_pawe = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'pawe_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+          'not null' => TRUE,
+        ],
+        'pawe_name' => [
+          'type' => 'varchar',
+          'length' => 50,
+          'not null' => TRUE,
+        ],
+        'state_code' => [
+          'type' => 'varchar',
+          'length' => 5,
+          'not null' => TRUE,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_pawe, $schema_pawe);
+  }
+
+  $tbl_exhibit = 'custom_exhibit';
+  if (!$schema->tableExists($tbl_exhibit)) {
+    $schema_exhibit = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'exhibit_booth' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'exhibit_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'exhibit_target' => [
+          'type' => 'varchar',
+          'length' => 15,
+        ],
+        'exhibit_target_other' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_exhibit, $schema_exhibit);
+  }
+
+  $tbl_speech_setting = 'custom_speech_setting';
+  if (!$schema->tableExists($tbl_speech_setting)) {
+    $schema_speech_setting = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'speech_target' => [
+          'type' => 'varchar',
+          'length' => 15,
+        ],
+        'speech_target_other' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_speech_setting, $schema_speech_setting);
+  }
+
+  $tbl_speech = 'custom_speech';
+  if (!$schema->tableExists($tbl_speech)) {
+    $schema_speech = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'speech_title' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'speech_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_speech, $schema_speech);
+  }
+
+  $tbl_interview = 'custom_interview';
+  if (!$schema->tableExists($tbl_interview)) {
+    $schema_interview = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'interview_title' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'interview_type' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'interview_channel' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'interview_channel_other' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_interview, $schema_interview);
+  }
+
+  $tbl_social_media = 'custom_social_media';
+  if (!$schema->tableExists($tbl_social_media)) {
+    $schema_social_media = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'social_type' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'social_topic' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'social_platform' => [
+          'type' => 'varchar',
+          'length' => 20,
+        ],
+        'social_platform_other' => [
+          'type' => 'varchar',
+          'length' => 20,
+        ],
+        'social_account' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'social_link' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'social_reach' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_social_media, $schema_social_media);
+  }
+
+  $tbl_picc_setting = 'custom_picc_setting';
+  if (!$schema->tableExists($tbl_picc_setting)) {
+    $schema_picc_setting = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'picc_session' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'picc_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'picc_facility' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_picc_setting, $schema_picc_setting);
+  }
+
+  $tbl_training = 'custom_training';
+  if (!$schema->tableExists($tbl_training)) {
+    $schema_training = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'training_target' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'training_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_training, $schema_training);
+  }
+
+  $tbl_article = 'custom_article';
+  if (!$schema->tableExists($tbl_article)) {
+    $schema_article = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'article_title' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'article_date' => [
+          'type' => 'date',
+          'mysql_type' => 'DATE',
+          'pgsql_type' => 'date',
+        ],
+        'article_publisher' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'article_publisher_other' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'article_link' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_article, $schema_article);
+  }
+
+  $tbl_meeting = 'custom_meeting';
+  if (!$schema->tableExists($tbl_meeting)) {
+    $schema_meeting = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'meeting_module' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'meeting_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_meeting, $schema_meeting);
+  }
+
+  $tbl_other = 'custom_other';
+  if (!$schema->tableExists($tbl_other)) {
+    $schema_other = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'other_activity' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'other_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_other, $schema_other);
+  }
+
+  $tbl_duta_participant = 'custom_duta_participant';
+  if (!$schema->tableExists($tbl_duta_participant)) {
+    $schema_duta_participant = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'duta_id' => [
+          'type' => 'varchar',
+          'length' => 10,
+          'not null' => TRUE,
+        ],
+        'event_date' => [
+          'type' => 'date',
+          'mysql_type' => 'DATE',
+          'pgsql_type' => 'date',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_duta_participant, $schema_duta_participant);
+  }
+
+  $tbl_collaborator = 'custom_collaborator';
+  if (!$schema->tableExists($tbl_collaborator)) {
+    $schema_collaborator = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'collaborator_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'collaboration_other' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'pawe_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_collaborator, $schema_collaborator);
+  }
+
+  $tbl_facility_involvement = 'custom_facility_involvement';
+  if (!$schema->tableExists($tbl_facility_involvement)) {
+    $schema_facility_involvement = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'facility_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_facility_involvement, $schema_facility_involvement);
+  }
+
+  $tbl_activity_image = 'custom_activity_image';
+  if (!$schema->tableExists($tbl_activity_image)) {
+    $schema_activity_image = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ],
+        'image_link' => [
+          'type' => 'varchar',
+          'length' => 255,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_activity_image, $schema_activity_image);
+  }
+
+  $tbl_pf10 = 'custom_pf10';
+  if (!$schema->tableExists($tbl_pf10)) {
+    $schema_pf10 = [
+      'fields' => [
+        'id' => [
+          'type' => 'serial',
+          'not null' => TRUE,
+        ],
+        'report_id' => [
+          'type' => 'varchar',
+          'length' => 15,
+        ],
+        'completed' => [
+          'type' => 'int',
+          'size' => 'tiny',
+          'default' => 0,
+        ],
+        'email' => [
+          'type' => 'varchar',
+          'length' => 150,
+          //'not null' => TRUE,
+        ],
+        'organization' => [
+          'type' => 'varchar',
+          'length' => 5,
+          //'not null' => TRUE,
+        ],
+        'state_code' => [
+          'type' => 'varchar',
+          'length' => 5,
+          //'not null' => TRUE,
+        ],
+        'facility' => [
+          'type' => 'varchar',
+          'length' => 150,
+        ],
+        'facility_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'ptj' => [
+          'type' => 'varchar',
+          'length' => 150,
+        ],
+        'ptj_code' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'facility_other' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'program_title' => [
+          'type' => 'varchar',
+          'length' => 300,
+          //'not null' => TRUE,
+        ],
+        'program_date' => [
+          'type' => 'varchar',
+          'length' => 25,
+          //'not null' => TRUE,
+        ],
+        'program_start_date' => [
+          'type' => 'date',
+          'mysql_type' => 'DATE',
+          'pgsql_type' => 'date',
+        ],
+        'program_end_date' => [
+          'type' => 'date',
+          'mysql_type' => 'DATE',
+          'pgsql_type' => 'date',
+        ],
+        'program_start_time' => [
+          'type' => 'time',
+          'mysql_type' => 'TIME',
+          'pgsql_type' => 'time without time zone',
+        ],
+        'program_end_time' => [
+          'type' => 'time',
+          'mysql_type' => 'TIME',
+          'pgsql_type' => 'time without time zone',
+        ],
+        'location' => [
+          'type' => 'varchar',
+          'length' => 100,
+          'not null' => TRUE,
+        ],
+        'latitude' => [
+          'type' => 'varchar',
+          'length' => 30,
+        ],
+        'longitude' => [
+          'type' => 'varchar',
+          'length' => 30,
+        ],
+        'postcode' => [
+          'type' => 'varchar',
+          'length' => 5,
+          //'not null' => TRUE,
+        ],
+        'location_type' => [
+          'type' => 'varchar',
+          'length' => 5,
+        ],
+        'program_method' => [
+          'type' => 'varchar',
+          'length' => 6,
+        ],
+        'exhibit_booth' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'exhibit_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'exhibit_target' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'no_of_speech' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'speech_title' => [
+          'type' => 'text',
+          'size' => 'big',
+          'default' => NULL,
+        ],
+        'speech_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'speech_target' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'interview_title' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'interview_type' => [
+          'type' => 'varchar',
+          'length' => 10,
+        ],
+        'interview_channel' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'social_type' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'social_topic' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'social_platform' => [
+          'type' => 'varchar',
+          'length' => 20,
+        ],
+        'social_account' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'social_link' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'social_reach' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'picc_session' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'picc_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'picc_facility' => [
+          'type' => 'varchar',
+          'length' => 150,
+        ],
+        'training_target' => [
+          'type' => 'varchar',
+          'length' => 20,
+        ],
+        'training_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'article_title' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'article_date' => [
+          'type' => 'date',
+          'mysql_type' => 'DATE',
+          'pgsql_type' => 'date',
+        ],
+        'article_publisher' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'article_link' => [
+          'type' => 'varchar',
+          'length' => 100,
+        ],
+        'meeting_module' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'meeting_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'no_of_other' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'other_activity' => [
+          'type' => 'text',
+          'size' => 'big',
+          'default' => NULL,
+        ],
+        'other_participant' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'initiative' => [
+          'type' => 'varchar',
+          'length' => 5,
+        ],
+        'no_of_duta' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'duta_participant' => [
+          'type' => 'text',
+          'size' => 'big',
+          'default' => NULL,
+        ],
+        'budget_expense' => [
+          'type' => 'numeric',
+          'precision' => 10,
+          'scale' => 2,
+        ],
+        'collaborator' => [
+          'type' => 'varchar',
+          'length' => 150,
+        ],
+        'no_of_facility_involve' => [
+          'type' => 'int',
+          'default' => 0,
+        ],
+        'facility_involvement' => [
+          'type' => 'text',
+          'size' => 'big',
+          'default' => NULL,
+        ],
+        'remark' => [
+          'type' => 'text',
+          'size' => 'big',
+          'default' => NULL,
+        ],
+        'rph_no' => [
+          'type' => 'varchar',
+          'length' => 50,
+        ],
+        'submission_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'submission_by' => [
+          'type' => 'int',
+          'size' => 'big',
+          'unsigned' => TRUE,
+        ],
+        'created_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'updated_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+        'deleted_at' => [
+          'type' => 'timestamp',
+          'mysql_type' => 'TIMESTAMP',
+          'pgsql_type' => 'timestamp without time zone',
+        ],
+      ],
+      'primary key' => ['id'],
+      'description' => 'Custom PF10 is table create to manage PF10 submmission record.',
+      'mysql_engine' => 'InnoDB',
+      'mysql_charset' => 'utf8mb4',
+      //'mysql_collate' => 'utf8mb4_general_ci',
+    ];
+
+    $schema->createTable($tbl_pf10, $schema_pf10);
+  }
+
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+ function pf10_uninstall() {
+  $connection = Database::getConnection();
+  $schema = $connection->schema();
+
+  $old_table = 'custom_pf10';
+
+  if ($schema->tableExists($old_table)) {
+    $new_table = $old_table;
+
+    // Make sure the new name is unique.
+    $i = 1;
+    $base_new_table = $new_table;
+    while ($schema->tableExists($new_table)) {
+      $new_table = $base_new_table . '_' . $i;
+      $i++;
+    }
+
+    $driver = \Drupal::database()->driver();
+
+    if ($driver == 'mysql') {
+        // Rename using raw SQL (works with MySQL, PostgreSQL).
+        try {
+            $connection->query("RENAME TABLE {$old_table} TO {$new_table}");
+        } catch (\Exception $e) {
+            \Drupal::logger( $old_table )->error('Failed to rename table: @message', ['@message' => $e->getMessage()]);
+        }
+    }
+    elseif ($driver == 'pgsql') {
+        // Rename using raw SQL (works with MySQL, PostgreSQL).
+        try {
+            $connection->query("ALTER TABLE {$old_table} RENAME TO {$new_table}");
+        } catch (\Exception $e) {
+            \Drupal::logger( $old_table )->error('Failed to rename table: @message', ['@message' => $e->getMessage()]);
+        }
+    }
+    else {
+        \Drupal::logger( $old_table )->error('Failed to rename table: @message', ['@message' => 'Using an unknown database driver.']);
+    }
+
+  }
+  else {
+    \Drupal::logger( $old_table )->error('Failed to rename table: @message', ['@message' => 'Table not exist.']);
+  }
+}
+
+function pf10_uninstall_others() {
+  $old_table = 'custom_pf10';
+  if ($schema->tableExists($old_table)) {
+    $schema->dropTable($old_table);
+  }
+}
